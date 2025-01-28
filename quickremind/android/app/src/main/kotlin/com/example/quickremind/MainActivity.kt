@@ -1,4 +1,4 @@
-package com.example.quickremind
+package jp.stem.quickremind
 
 import io.flutter.embedding.android.FlutterActivity
 
