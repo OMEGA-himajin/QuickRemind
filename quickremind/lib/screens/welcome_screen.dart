@@ -1,7 +1,6 @@
-// screens/welcome_screen.dart
 import 'package:flutter/material.dart';
+import 'package:quickremind/app.dart';
 import 'package:quickremind/controller/auth_controller.dart';
-import 'package:quickremind/screens/home_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -43,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void _navigateToHomeScreen() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => (App())),
     );
   }
 
