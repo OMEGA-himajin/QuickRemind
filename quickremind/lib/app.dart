@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/test.dart';
+import 'screens/settings_screen.dart';
 
 class App extends StatefulWidget {
   @override
@@ -66,7 +67,10 @@ class _AppState extends State<App> {
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('設定'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
