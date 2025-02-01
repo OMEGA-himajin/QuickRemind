@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/test.dart';
 import 'screens/settings_screen.dart';
+import 'controller/auth_controller.dart';
 
 class App extends StatefulWidget {
   @override
@@ -10,11 +11,12 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int _selectedIndex = 0;
+  String? uid = AuthController().getCurrentUser()?.uid;
 
   // 各画面に対応するウィジェット
   final List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    TestScreen(),
+    // TimetableScreen(),
   ];
 
   // タブのインデックスが変更されたときに呼ばれる
@@ -68,8 +70,10 @@ class _AppState extends State<App> {
             leading: const Icon(Icons.settings),
             title: const Text('設定'),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SettingsScreen(uid: uid!)));
             },
           ),
           ListTile(

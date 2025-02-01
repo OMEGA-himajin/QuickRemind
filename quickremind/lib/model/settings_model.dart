@@ -1,40 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class SettingsModel {
-  bool showSat;
-  bool showSun;
-  int _period;
+  final bool showSat;
+  final bool showSun;
+  final int period;
 
   SettingsModel({
     required this.showSat,
     required this.showSun,
-    required int period,
-  }) : _period = _validatePeriod(period);
+    required this.period,
+  });
 
-  int get period => _period;
+  // Firestore から取得したデータをオブジェクトに変換（範囲外の period を補正）
+  factory SettingsModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>? ?? {};
+    int period = data['Period'] ?? 6;
 
-  set period(int value) {
-    _period = _validatePeriod(value);
-  }
+    // 4〜10 の範囲に補正
+    if (period < 4) period = 4;
+    if (period > 10) period = 10;
 
-  static int _validatePeriod(int value) {
-    if (value < 4 || value > 10) {
-      throw ArgumentError('Period must be between 4 and 10.');
-    }
-    return value;
-  }
-
-  factory SettingsModel.fromMap(Map<String, dynamic> map) {
     return SettingsModel(
-      showSat: map['showSat'] ?? false,
-      showSun: map['showSun'] ?? false,
-      period: map['period'] ?? 6, // デフォルト値を6に設定
+      showSat: data['showSat'] ?? false,
+      showSun: data['showSun'] ?? false,
+      period: period,
     );
   }
 
-  Map<String, dynamic> toMap() {
+  // Firestore に保存するための JSON 変換
+  Map<String, dynamic> toJson() {
     return {
       'showSat': showSat,
       'showSun': showSun,
-      'period': _period,
+      'Period': period,
     };
   }
 }

@@ -1,48 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../controller/timetable_controller.dart';
+import 'package:quickremind/controller/settings_controller.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
+  final String uid; // FirestoreのユーザーID
+
+  const SettingsScreen({super.key, required this.uid});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isLoading = true; // ローディング状態を管理
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final settingsController = context.read<SettingsController>();
+    await settingsController.loadSettings(widget.uid);
+    setState(() {
+      _isLoading = false; // ロード完了後、ローディング終了
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<TimetableController>(context);
+    final settingsController = context.watch<SettingsController>();
+
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()), // 🔄 ロード中表示
+      );
+    }
+
+    final settings = settingsController.settings;
+    if (settings == null) {
+      return const Scaffold(
+        body: Center(child: Text("設定の読み込みに失敗しました。")),
+      );
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('設定'),
-      ),
-      body: ListView(
+      appBar: AppBar(title: const Text("設定")),
+      body: Column(
         children: [
           SwitchListTile(
-            title: Text('土曜日を表示'),
-            value: controller.settings.showSat,
-            onChanged: (bool value) {
-              controller.toggleSaturday();
-              controller.updateSettings();
+            title: const Text("土曜表示"),
+            value: settings.showSat,
+            onChanged: (value) {
+              settingsController.updateShowSat(value);
+              settingsController.saveSettings(widget.uid);
             },
           ),
           SwitchListTile(
-            title: Text('日曜日を表示'),
-            value: controller.settings.showSun,
-            onChanged: (bool value) {
-              controller.toggleSunday();
-              controller.updateSettings();
+            title: const Text("日曜表示"),
+            value: settings.showSun,
+            onChanged: (value) {
+              settingsController.updateShowSun(value);
+              settingsController.saveSettings(widget.uid);
             },
           ),
           ListTile(
-            title: Text('表示時間数'),
+            title: const Text("表示授業時間"),
+            subtitle: Text(settings.period.toString()),
             trailing: DropdownButton<int>(
-              value: controller.settings.period,
-              items: List.generate(7, (index) => index + 4).map((int value) {
-                return DropdownMenuItem<int>(
-                  value: value,
-                  child: Text(value.toString()),
+              value: settings.period,
+              items: List.generate(7, (index) => index + 4).map((e) {
+                return DropdownMenuItem(
+                  value: e,
+                  child: Text(e.toString()),
                 );
               }).toList(),
-              onChanged: (int? newValue) {
-                if (newValue != null) {
-                  controller.setperiod(newValue);
-                  controller.updateSettings();
+              onChanged: (value) {
+                if (value != null) {
+                  settingsController.updatePeriod(value);
+                  settingsController.saveSettings(widget.uid);
                 }
               },
             ),
