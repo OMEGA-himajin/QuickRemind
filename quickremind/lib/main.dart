@@ -12,6 +12,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SettingsController()),
+        ChangeNotifierProvider(create: (context) => TimetableController()),
       ],
       child: MyApp(),
     ),
