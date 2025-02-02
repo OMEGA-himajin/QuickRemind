@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
-import 'screens/test.dart';
 import 'screens/settings_screen.dart';
 import 'controller/auth_controller.dart';
+import 'screens/timetable_screen.dart';
 
 class App extends StatefulWidget {
   @override
@@ -11,13 +11,21 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   int _selectedIndex = 0;
-  String? uid = AuthController().getCurrentUser()?.uid;
+  String? uid;
 
-  // 各画面に対応するウィジェット
-  final List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    // TimetableScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    uid = AuthController().getCurrentUser()?.uid;
+  }
+
+  // 各画面に対応するウィジェットを取得
+  List<Widget> get _widgetOptions {
+    if (uid == null) {
+      return [HomeScreen(), Center(child: CircularProgressIndicator())];
+    }
+    return [HomeScreen(), TimetableScreen(uid: uid!)];
+  }
 
   // タブのインデックスが変更されたときに呼ばれる
   void _onItemTapped(int index) {
@@ -30,7 +38,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedIndex == 0 ? 'ホーム' : 'テスト'),
+        title: Text(_selectedIndex == 0 ? 'ホーム' : '時間割'),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -70,10 +78,12 @@ class _AppState extends State<App> {
             leading: const Icon(Icons.settings),
             title: const Text('設定'),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SettingsScreen(uid: uid!)));
+              if (uid != null) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingsScreen(uid: uid!)));
+              }
             },
           ),
           ListTile(
@@ -91,8 +101,8 @@ class _AppState extends State<App> {
             label: 'ホーム',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'テスト',
+            icon: Icon(Icons.schedule),
+            label: '時間割',
           ),
         ],
         currentIndex: _selectedIndex,
