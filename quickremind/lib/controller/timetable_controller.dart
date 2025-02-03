@@ -127,4 +127,30 @@ class TimetableController extends ChangeNotifier {
         return null;
     }
   }
+
+  Future<void> addItem(String uid, String subjectId, String itemName) async {
+    final subjectRef = _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('subjects')
+        .doc(subjectId);
+    await subjectRef.update({
+      'items': FieldValue.arrayUnion([itemName])
+    });
+    _subjects[subjectId]?.items.add(itemName);
+    notifyListeners();
+  }
+
+  Future<void> removeItem(String uid, String subjectId, String itemName) async {
+    final subjectRef = _firestore
+        .collection('users')
+        .doc(uid)
+        .collection('subjects')
+        .doc(subjectId);
+    await subjectRef.update({
+      'items': FieldValue.arrayRemove([itemName])
+    });
+    _subjects[subjectId]?.items.remove(itemName);
+    notifyListeners();
+  }
 }

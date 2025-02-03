@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
+import 'package:quickremind/screens/itemlist_screen.dart';
 
 class SubjectSelectionScreen extends StatefulWidget {
   final String uid;
@@ -92,8 +93,16 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                       secondary: IconButton(
                         icon: const Icon(Icons.arrow_forward_ios),
                         onPressed: () {
-                          // TODO: 教科詳細画面へ遷移
-                          print('Navigate to subject detail: ${subject.id}');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ItemListScreen(
+                                uid: widget.uid,
+                                subjectId: subject.id,
+                                subjectName: subject.name,
+                              ),
+                            ),
+                          );
                         },
                       ),
                     );
