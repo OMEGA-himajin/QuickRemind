@@ -1,7 +1,7 @@
 class SubjectModel {
-  String id;
-  String name;
-  List<String> items;
+  final String id;
+  final String name;
+  final List<String> items;
 
   SubjectModel({
     required this.id,

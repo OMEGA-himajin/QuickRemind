@@ -22,9 +22,19 @@ class _AppState extends State<App> {
   // 各画面に対応するウィジェットを取得
   List<Widget> get _widgetOptions {
     if (uid == null) {
-      return [HomeScreen(), Center(child: CircularProgressIndicator())];
+      return [
+        HomeScreen(
+          uid: uid!,
+        ),
+        Center(child: CircularProgressIndicator())
+      ];
     }
-    return [HomeScreen(), TimetableScreen(uid: uid!)];
+    return [
+      HomeScreen(
+        uid: uid!,
+      ),
+      TimetableScreen(uid: uid!)
+    ];
   }
 
   // タブのインデックスが変更されたときに呼ばれる

@@ -9,10 +9,12 @@ class TimetableController extends ChangeNotifier {
   TimetableModel? _timetable;
   Map<String, SubjectModel> _subjects = {};
   SettingsModel? _settings;
+  String _memo = '';
 
   TimetableModel? get timetable => _timetable;
   Map<String, SubjectModel> get subjects => _subjects;
   SettingsModel? get settings => _settings;
+  String get memo => _memo;
 
   Future<void> loadTimetable(String uid) async {
     final timetableDoc = await _firestore
@@ -152,5 +154,27 @@ class TimetableController extends ChangeNotifier {
     });
     _subjects[subjectId]?.items.remove(itemName);
     notifyListeners();
+  }
+
+  Future<void> loadMemo(String uid) async {
+    final userDoc = await _firestore.collection('users').doc(uid).get();
+    _memo = userDoc.data()?['memo'] ?? '';
+    notifyListeners();
+  }
+
+  Future<void> saveMemo(String uid, String memo) async {
+    await _firestore.collection('users').doc(uid).update({'memo': memo});
+    _memo = memo;
+    notifyListeners();
+  }
+
+  List<SubjectModel> getTodaySubjects() {
+    if (_timetable == null) return [];
+    final now = DateTime.now();
+    final weekday = now.weekday - 1; // 0 = Monday, 6 = Sunday
+    final todaySubjects = _timetable!
+            .toMap()[['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'][weekday]]
+        as List<String>;
+    return todaySubjects.map((subjectId) => _subjects[subjectId]!).toList();
   }
 }
