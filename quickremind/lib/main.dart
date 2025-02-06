@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quickremind/controller/settings_controller.dart';
 import 'package:quickremind/screens/welcome_screen.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
+import 'package:quickremind/controller/weather_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +13,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SettingsController()),
+        ChangeNotifierProvider(create: (context) => TimetableController()),
+        ChangeNotifierProvider(create: (context) => WeatherController()),
       ],
       child: MyApp(),
     ),

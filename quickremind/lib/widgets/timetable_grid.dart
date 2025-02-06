@@ -24,10 +24,8 @@ class TimetableGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final dayCount = 5 + (showSat ? 1 : 0) + (showSun ? 1 : 0);
-        final cellWidth = (constraints.maxWidth - 40) /
-            (dayCount + 1); // 40 is for first column and padding
-        final cellHeight = (constraints.maxHeight - 40) /
-            (periods + 1); // 40 is for header row and padding
+        final cellWidth = (constraints.maxWidth - 40) / (dayCount + 1);
+        final cellHeight = (constraints.maxHeight - 20) / (periods + 1);
 
         return Table(
           border: TableBorder.all(
@@ -35,7 +33,7 @@ class TimetableGrid extends StatelessWidget {
             width: 1,
           ),
           columnWidths: {
-            0: const FixedColumnWidth(40), // First column for period numbers
+            0: const FixedColumnWidth(40),
             for (int i = 1; i <= dayCount; i++) i: FixedColumnWidth(cellWidth),
           },
           children: [
@@ -75,7 +73,7 @@ class TimetableGrid extends StatelessWidget {
 
   Widget _buildHeaderCell(String text, ThemeData theme, double height) {
     return Container(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(2.0),
       height: height,
       child: Center(
         child: Text(
@@ -84,6 +82,7 @@ class TimetableGrid extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: theme.colorScheme.onSecondaryContainer,
           ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
@@ -91,16 +90,22 @@ class TimetableGrid extends StatelessWidget {
 
   Widget _buildTimetableCell(
       int day, int period, ThemeData theme, double height) {
+    String cellText = '';
+    if (day < timetable.length && period < timetable[day].length) {
+      cellText = timetable[day][period];
+    }
+
     return InkWell(
       onTap: () => onCellTap(day, period),
       child: Container(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(2.0),
         height: height,
         child: Center(
           child: Text(
-            timetable[day][period],
+            cellText,
             style: theme.textTheme.bodySmall,
             textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ),
