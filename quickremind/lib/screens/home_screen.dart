@@ -3,10 +3,8 @@ import 'package:quickremind/widgets/datetile_widget.dart';
 import 'package:quickremind/widgets/memo_widget.dart';
 import 'package:quickremind/controller/memo_controller.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
-// import '../controller/subject_controller.dart';
 import '../model/subject_model.dart';
 import '../widgets/subjectcard.dart';
-import '../widgets/swipebutton_widget.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,23 +18,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   DateTime _selectedDate = DateTime.now();
-  final TimetableController _controller = TimetableController();
   final AppinioSwiperController _swiperController = AppinioSwiperController();
+  TimetableController timetableController = TimetableController();
   List<SubjectModel> _subjects = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadSubjects();
+    _loadSubjects(widget.uid);
   }
 
-  Future<void> _loadSubjects() async {
-    List<SubjectModel> subjects = await _controller.getTodaySubjects();
+  Future<void> _loadSubjects(String uid) async {
+    List subjects = await timetableController.fetchSubjectsForToday(uid);
+    _subjects = subjects.cast<SubjectModel>();
     setState(() {
-      _subjects = subjects.toSet().toList(); // 同じ教科を1つにまとめる
       isLoading = false;
     });
+  }
+
+  void _onswipeEnd(
+      int previousIndex, int currentIndex, SwiperActivity activity) {
+    if (activity.direction == AxisDirection.right) {
+      print('Swiped right');
+    } else if (activity.direction == AxisDirection.left) {
+      print('Swiped left');
+      setState(() {
+        _subjects.add(_subjects[previousIndex]);
+      });
+    }
   }
 
   @override
@@ -59,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               invertAngleOnBottomDrag: true,
               backgroundCardCount: 3,
               swipeOptions: const SwipeOptions.symmetric(horizontal: true),
-              onCardPositionChanged: (
-                SwiperPosition position,
-              ) {},
+              onSwipeEnd: _onswipeEnd,
               controller: _swiperController,
               cardCount: _subjects.length,
               cardBuilder: (BuildContext context, int index) {
@@ -69,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-          ConfirmationButtons(controller: _swiperController),
+          Center(child: Text("スワイプして確認")),
           const SizedBox(height: 20),
         ],
       ),

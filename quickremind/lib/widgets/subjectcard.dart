@@ -9,6 +9,7 @@ class ConfirmationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
@@ -27,11 +28,19 @@ class ConfirmationCard extends StatelessWidget {
         children: [
           Text(subject.name,
               style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           Center(
             child: Column(
-              children: subject.items.map((item) => Text('・$item')).toList(),
+              children: subject.items
+                  .map((item) => Text(
+                        '・$item',
+                        style: const TextStyle(
+                          fontSize: 20, // フォントサイズを大きくする
+                          fontWeight: FontWeight.bold, // 必要に応じて太字にする
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
           const Spacer(),
