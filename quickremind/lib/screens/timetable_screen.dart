@@ -63,7 +63,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
         ];
 
         return Scaffold(
-          appBar: AppBar(title: const Text("時間割")),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: TimetableGrid(

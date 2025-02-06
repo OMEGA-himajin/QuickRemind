@@ -9,10 +9,12 @@ class TimetableController extends ChangeNotifier {
   TimetableModel? _timetable;
   Map<String, SubjectModel> _subjects = {};
   SettingsModel? _settings;
+  String _memo = '';
 
   TimetableModel? get timetable => _timetable;
   Map<String, SubjectModel> get subjects => _subjects;
   SettingsModel? get settings => _settings;
+  String get memo => _memo;
 
   Future<void> loadTimetable(String uid) async {
     final timetableDoc = await _firestore
@@ -152,5 +154,86 @@ class TimetableController extends ChangeNotifier {
     });
     _subjects[subjectId]?.items.remove(itemName);
     notifyListeners();
+  }
+
+  Future<void> loadMemo(String uid) async {
+    final userDoc = await _firestore.collection('users').doc(uid).get();
+    _memo = userDoc.data()?['memo'] ?? '';
+    notifyListeners();
+  }
+
+  Future<void> saveMemo(String uid, String memo) async {
+    await _firestore.collection('users').doc(uid).update({'memo': memo});
+    _memo = memo;
+    notifyListeners();
+  }
+
+  Future<List<String>> fetchTimetableForDay(int day, String uid) async {
+    if (uid.isEmpty) return [];
+
+    try {
+      var timetableSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('timetables')
+          .limit(1) // 最新の時間割を取得
+          .get();
+
+      if (timetableSnapshot.docs.isEmpty) return [];
+
+      var timetableData = timetableSnapshot.docs.first.data();
+      var timetable = TimetableModel.fromMap(
+          timetableSnapshot.docs.first.id, timetableData);
+
+      switch (day) {
+        case 1:
+          return timetable.mon;
+        case 2:
+          return timetable.tue;
+        case 3:
+          return timetable.wed;
+        case 4:
+          return timetable.thu;
+        case 5:
+          return timetable.fri;
+        case 6:
+          return timetable.sat;
+        case 7:
+          return timetable.sun;
+        default:
+          return [];
+      }
+    } catch (e) {
+      print('Error fetching timetable: $e');
+      return [];
+    }
+  }
+
+  Future<List<SubjectModel>> fetchSubjectsForToday(String uid) async {
+    if (uid.isEmpty) return [];
+
+    try {
+      // 現在の曜日を取得（1: 月曜日, 7: 日曜日）
+      int today = DateTime.now().weekday;
+
+      // 曜日に対応する subjectId のリストを取得
+      List<String> subjectIds = await fetchTimetableForDay(today, uid);
+      if (subjectIds.isEmpty) return [];
+
+      // subjectId に対応する科目データを取得
+      var subjectsSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('subjects')
+          .where(FieldPath.documentId, whereIn: subjectIds)
+          .get();
+
+      return subjectsSnapshot.docs
+          .map((doc) => SubjectModel.fromMap(doc.id, doc.data()))
+          .toList();
+    } catch (e) {
+      print('Error fetching subjects for today: $e');
+      return [];
+    }
   }
 }
