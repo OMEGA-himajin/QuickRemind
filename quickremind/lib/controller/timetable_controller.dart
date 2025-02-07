@@ -68,6 +68,21 @@ class TimetableController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> removeSubject(String uid, String subjectId) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('subjects')
+          .doc(subjectId)
+          .delete();
+      _subjects.remove(subjectId);
+      notifyListeners();
+    } catch (e) {
+      print('Error removing subject: $e');
+    }
+  }
+
   void updateTimetableCell(int day, int period, String subjectId) {
     if (_timetable != null) {
       switch (day) {
