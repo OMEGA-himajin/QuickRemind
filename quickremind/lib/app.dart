@@ -3,6 +3,7 @@ import 'screens/home_screen.dart';
 import 'screens/settings_screen.dart';
 import 'controller/auth_controller.dart';
 import 'screens/timetable_screen.dart';
+import 'screens/license_screen.dart';
 
 class App extends StatefulWidget {
   @override
@@ -99,7 +100,12 @@ class _AppState extends State<App> {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text('ライセンス情報'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LicenseScreen()),
+              );
+            },
           ),
         ],
       )),
