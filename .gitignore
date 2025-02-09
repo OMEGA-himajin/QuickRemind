@@ -1,7 +1,10 @@
 # Igonore generated files
-generated_plugin_registrant.cc
-generated_plugins.cmake
-
-GeneratedPluginRegistrant.swift
-
-CMakeLists.txt
+quickremind/**/android/**/GeneratedPluginRegistrant.java
+quickremind/**/ios/Runner/GeneratedPluginRegistrant.*
+quickremind/**/macos/Flutter/GeneratedPluginRegistrant.swift
+quickremind/**/windows/flutter/generated_plugin_registrant.cc
+quickremind/**/windows/flutter/generated_plugin_registrant.h
+quickremind/**/windows/flutter/generated_plugins.cmake
+quickremind/**/linux/flutter/generated_plugin_registrant.cc
+quickremind/**/linux/flutter/generated_plugin_registrant.h
+quickremind/**/linux/flutter/generated_plugins.cmake

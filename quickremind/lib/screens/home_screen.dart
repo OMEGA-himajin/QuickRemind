@@ -65,17 +65,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           MemoWidget(controller: MemoController(uid: widget.uid)),
           Expanded(
-            child: AppinioSwiper(
-              invertAngleOnBottomDrag: true,
-              backgroundCardCount: 3,
-              swipeOptions: const SwipeOptions.symmetric(horizontal: true),
-              onSwipeEnd: _onswipeEnd,
-              controller: _swiperController,
-              cardCount: _subjects.length,
-              cardBuilder: (BuildContext context, int index) {
-                return ConfirmationCard(subject: _subjects[index]);
-              },
-            ),
+            child: _subjects.isEmpty
+                ? Container()
+                : AppinioSwiper(
+                    invertAngleOnBottomDrag: true,
+                    backgroundCardCount: 3,
+                    swipeOptions:
+                        const SwipeOptions.symmetric(horizontal: true),
+                    onSwipeEnd: _onswipeEnd,
+                    controller: _swiperController,
+                    cardCount: _subjects.length,
+                    cardBuilder: (BuildContext context, int index) {
+                      return ConfirmationCard(subject: _subjects[index]);
+                    },
+                  ),
           ),
           Center(child: Text("スワイプして確認")),
           const SizedBox(height: 20),
