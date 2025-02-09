@@ -76,36 +76,71 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                 child: ListView(
                   children: timetableController.subjects.values.map((subject) {
                     return RadioListTile<String>(
-                      title: Text(subject.name),
-                      value: subject.id,
-                      groupValue: _selectedSubjectId,
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _selectedSubjectId = value;
-                          });
-                          timetableController.updateTimetableCell(
-                              widget.day, widget.period, value);
-                          timetableController.saveTimetable(widget.uid);
-                          Navigator.pop(context);
-                        }
-                      },
-                      secondary: IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ItemListScreen(
-                                uid: widget.uid,
-                                subjectId: subject.id,
-                                subjectName: subject.name,
-                              ),
-                            ),
-                          );
+                        title: Text(subject.name),
+                        value: subject.id,
+                        groupValue: _selectedSubjectId,
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedSubjectId = value;
+                            });
+                            timetableController.updateTimetableCell(
+                                widget.day, widget.period, value);
+                            timetableController.saveTimetable(widget.uid);
+                            Navigator.pop(context);
+                          }
                         },
-                      ),
-                    );
+                        secondary: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("教科を削除"),
+                                        content:
+                                            Text("「${subject.name}」を削除しますか？"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: const Text("キャンセル"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              timetableController.removeSubject(
+                                                  widget.uid, subject.id);
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("削除",
+                                                style: TextStyle(
+                                                    color: Colors.red)),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.delete)),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_forward_ios),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ItemListScreen(
+                                      uid: widget.uid,
+                                      subjectId: subject.id,
+                                      subjectName: subject.name,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ));
                   }).toList(),
                 ),
               ),

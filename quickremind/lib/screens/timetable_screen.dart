@@ -64,34 +64,35 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
         return Scaffold(
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TimetableGrid(
-              days: days,
-              periods: settings.period,
-              showSat: settings.showSat,
-              showSun: settings.showSun,
-              timetable: timetableData
-                  .map((day) => day
-                      .map((subjectId) =>
-                          timetableController.getSubjectName(subjectId))
-                      .toList())
-                  .toList(),
-              onCellTap: (day, period) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SubjectSelectionScreen(
-                      uid: widget.uid,
-                      day: day,
-                      period: period,
-                      selectedSubjectId:
-                          timetableController.getSubjectIdForCell(day, period),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: TimetableGrid(
+                  days: days,
+                  periods: settings.period,
+                  showSat: settings.showSat,
+                  showSun: settings.showSun,
+                  timetable: timetableData
+                      .map((day) => day
+                          .map((subjectId) =>
+                              timetableController.getSubjectName(subjectId))
+                          .toList())
+                      .toList(),
+                  onCellTap: (day, period) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SubjectSelectionScreen(
+                          uid: widget.uid,
+                          day: day,
+                          period: period,
+                          selectedSubjectId: timetableController
+                              .getSubjectIdForCell(day, period),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )),
         );
       },
     );
