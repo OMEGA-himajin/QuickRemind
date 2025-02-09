@@ -251,4 +251,24 @@ class TimetableController extends ChangeNotifier {
       return [];
     }
   }
+
+  Future<void> addEmptyTimetable(String uid) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('timetables')
+          .add({
+        'mon': List.filled(4, ''),
+        'tue': List.filled(4, ''),
+        'wed': List.filled(4, ''),
+        'thu': List.filled(4, ''),
+        'fri': List.filled(4, ''),
+        'sat': List.filled(4, ''),
+        'sun': List.filled(4, ''),
+      });
+    } catch (e) {
+      print('Error adding empty timetable: $e');
+    }
+  }
 }
