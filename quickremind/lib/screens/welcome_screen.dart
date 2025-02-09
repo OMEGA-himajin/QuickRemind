@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/app.dart';
 import 'package:quickremind/controller/auth_controller.dart';
+import 'package:quickremind/controller/timetable_controller.dart';
 import 'package:quickremind/model/user_model.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -71,6 +72,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     }
 
     if (user != null) {
+      initDatabase(user.uid);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -87,6 +89,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Future<void> _signInAnonymously(AuthController authController) async {
     UserModel? user = await authController.signInAnonymously();
     if (user != null) {
+      initDatabase(user.uid);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -98,6 +101,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         _errorMessage = "匿名ログインに失敗しました";
       });
     }
+  }
+
+  void initDatabase(String uid) {
+    final timetableController = TimetableController();
+
+    // 時間割を追加
+    timetableController.addEmptyTimetable(uid);
   }
 
   @override
