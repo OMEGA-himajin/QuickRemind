@@ -52,47 +52,41 @@ class _TimetableScreenState extends State<TimetableScreen> {
         }
 
         final days = ['月', '火', '水', '木', '金', '土', '日'];
-        final timetableData = [
-          timetable.mon,
-          timetable.tue,
-          timetable.wed,
-          timetable.thu,
-          timetable.fri,
-          timetable.sat,
-          timetable.sun
-        ];
 
         return Scaffold(
           body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: TimetableGrid(
-                  days: days,
-                  periods: settings.period,
-                  showSat: settings.showSat,
-                  showSun: settings.showSun,
-                  timetable: timetableData
-                      .map((day) => day
-                          .map((subjectId) =>
-                              timetableController.getSubjectName(subjectId))
-                          .toList())
-                      .toList(),
-                  onCellTap: (day, period) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SubjectSelectionScreen(
-                          uid: widget.uid,
-                          day: day,
-                          period: period,
-                          selectedSubjectId: timetableController
-                              .getSubjectIdForCell(day, period),
-                        ),
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: TimetableGrid(
+                days: days,
+                periods: settings.period,
+                showSat: settings.showSat,
+                showSun: settings.showSun,
+                timetable: List.generate(
+                    7,
+                    (dayIndex) => List.generate(
+                        settings.period,
+                        (periodIndex) => timetableController.getSubjectName(
+                            timetableController.getSubjectIdForCell(
+                                    dayIndex, periodIndex) ??
+                                ''))),
+                onCellTap: (day, period) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubjectSelectionScreen(
+                        uid: widget.uid,
+                        day: day,
+                        period: period,
+                        selectedSubjectId: timetableController
+                            .getSubjectIdForCell(day, period),
                       ),
-                    );
-                  },
-                ),
-              )),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
         );
       },
     );
