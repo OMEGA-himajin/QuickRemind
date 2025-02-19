@@ -26,7 +26,11 @@ class TimetableController extends ChangeNotifier {
     if (timetableDoc.docs.isNotEmpty) {
       _timetable = TimetableModel.fromMap(
           timetableDoc.docs.first.id, timetableDoc.docs.first.data());
+      _timetable!.ensureSize(_settings?.period ?? 4);
       notifyListeners();
+    } else {
+      await addEmptyTimetable(uid);
+      await loadTimetable(uid);
     }
   }
 
@@ -84,30 +88,15 @@ class TimetableController extends ChangeNotifier {
   }
 
   void updateTimetableCell(int day, int period, String subjectId) {
-    if (_timetable != null) {
-      switch (day) {
-        case 0:
-          _timetable!.mon[period] = subjectId;
-          break;
-        case 1:
-          _timetable!.tue[period] = subjectId;
-          break;
-        case 2:
-          _timetable!.wed[period] = subjectId;
-          break;
-        case 3:
-          _timetable!.thu[period] = subjectId;
-          break;
-        case 4:
-          _timetable!.fri[period] = subjectId;
-          break;
-        case 5:
-          _timetable!.sat[period] = subjectId;
-          break;
-        case 6:
-          _timetable!.sun[period] = subjectId;
-          break;
+    if (_timetable != null &&
+        day >= 0 &&
+        day < 7 &&
+        period >= 0 &&
+        period < (_settings?.period ?? 4)) {
+      while (_timetable!.days[day].length <= period) {
+        _timetable!.days[day].add('');
       }
+      _timetable!.days[day][period] = subjectId;
       notifyListeners();
     }
   }
@@ -124,25 +113,17 @@ class TimetableController extends ChangeNotifier {
   }
 
   String? getSubjectIdForCell(int day, int period) {
-    if (_timetable == null) return null;
-    switch (day) {
-      case 0:
-        return _timetable!.mon[period];
-      case 1:
-        return _timetable!.tue[period];
-      case 2:
-        return _timetable!.wed[period];
-      case 3:
-        return _timetable!.thu[period];
-      case 4:
-        return _timetable!.fri[period];
-      case 5:
-        return _timetable!.sat[period];
-      case 6:
-        return _timetable!.sun[period];
-      default:
-        return null;
+    if (_timetable == null ||
+        day < 0 ||
+        day >= 7 ||
+        period < 0 ||
+        period >= (_settings?.period ?? 4)) {
+      return null;
     }
+    if (period >= _timetable!.days[day].length) {
+      return ''; // 空の文字列を返す（科目が設定されていない場合）
+    }
+    return _timetable!.days[day][period];
   }
 
   Future<void> addItem(String uid, String subjectId, String itemName) async {
@@ -200,24 +181,11 @@ class TimetableController extends ChangeNotifier {
       var timetable = TimetableModel.fromMap(
           timetableSnapshot.docs.first.id, timetableData);
 
-      switch (day) {
-        case 1:
-          return timetable.mon;
-        case 2:
-          return timetable.tue;
-        case 3:
-          return timetable.wed;
-        case 4:
-          return timetable.thu;
-        case 5:
-          return timetable.fri;
-        case 6:
-          return timetable.sat;
-        case 7:
-          return timetable.sun;
-        default:
-          return [];
-      }
+      // dayは1（月曜）から7（日曜）の範囲なので、0から6の範囲に変換
+      int dayIndex = day - 1;
+      if (dayIndex < 0 || dayIndex >= 7) return [];
+
+      return timetable.days[dayIndex];
     } catch (e) {
       print('Error fetching timetable: $e');
       return [];
@@ -249,6 +217,27 @@ class TimetableController extends ChangeNotifier {
     } catch (e) {
       print('Error fetching subjects for today: $e');
       return [];
+    }
+  }
+
+  Future<void> addEmptyTimetable(String uid) async {
+    try {
+      final emptyTimetable = {
+        'mon': List.filled(_settings?.period ?? 4, ''),
+        'tue': List.filled(_settings?.period ?? 4, ''),
+        'wed': List.filled(_settings?.period ?? 4, ''),
+        'thu': List.filled(_settings?.period ?? 4, ''),
+        'fri': List.filled(_settings?.period ?? 4, ''),
+        'sat': List.filled(_settings?.period ?? 4, ''),
+        'sun': List.filled(_settings?.period ?? 4, ''),
+      };
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('timetables')
+          .add(emptyTimetable);
+    } catch (e) {
+      print('Error adding empty timetable: $e');
     }
   }
 }
