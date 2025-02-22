@@ -1,29 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quickremind/model/settings_model.dart';
+import 'package:quickremind/repository/settings_repository.dart';
 
 class SettingsController extends ChangeNotifier {
+  final SettingsRepository _repository;
   SettingsModel? _settings;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  SettingsController({required SettingsRepository repository})
+      : _repository = repository;
 
   SettingsModel? get settings => _settings;
 
   Future<void> loadSettings(String uid) async {
-    final doc = await _firestore.collection('users').doc(uid).get();
-    if (doc.exists) {
-      _settings = SettingsModel.fromFirestore(doc);
-    } else {
-      _settings = SettingsModel(showSat: false, showSun: false, period: 6);
-      await saveSettings(uid);
-    }
-    notifyListeners(); // 🔥 データ更新を通知
+    _settings = await _repository.fetchSettings(uid);
+    notifyListeners();
   }
 
   Future<void> saveSettings(String uid) async {
-    await _firestore
-        .collection('users')
-        .doc(uid)
-        .set(_settings!.toJson(), SetOptions(merge: true));
+    await _repository.saveSettings(uid, _settings!);
   }
 
   void updateShowSat(bool value) {

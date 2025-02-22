@@ -32,24 +32,50 @@ class TimetableModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'mon': days[0],
-      'tue': days[1],
-      'wed': days[2],
-      'thu': days[3],
-      'fri': days[4],
-      'sat': days[5],
-      'sun': days[6],
+      'mon': mon,
+      'tue': tue,
+      'wed': wed,
+      'thu': thu,
+      'fri': fri,
+      'sat': sat,
+      'sun': sun,
     };
   }
 
-  void ensureSize(int periods) {
-    for (int i = 0; i < 7; i++) {
-      while (days[i].length < periods) {
-        days[i].add('');
-      }
-      if (days[i].length > periods) {
-        days[i] = days[i].sublist(0, periods);
-      }
+  List<String> getScheduleForDay(int day) {
+    switch (day) {
+      case 0:
+        return mon;
+      case 1:
+        return tue;
+      case 2:
+        return wed;
+      case 3:
+        return thu;
+      case 4:
+        return fri;
+      case 5:
+        return sat;
+      case 6:
+        return sun;
+      default:
+        throw ArgumentError('Invalid day index: $day');
     }
+  }
+
+  void updateCell(int day, int period, String subjectId) {
+    final schedule = getScheduleForDay(day);
+    while (schedule.length <= period) {
+      schedule.add('');
+    }
+    schedule[period] = subjectId;
+  }
+
+  String? getSubjectIdForCell(int day, int period) {
+    final schedule = getScheduleForDay(day);
+    while (schedule.length <= period) {
+      schedule.add('');
+    }
+    return schedule[period];
   }
 }

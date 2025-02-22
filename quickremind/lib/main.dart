@@ -7,19 +7,41 @@ import 'package:quickremind/controller/auth_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/firebase_options.dart';
+import 'package:quickremind/controller/subject_controller.dart';
+import 'package:quickremind/controller/memo_controller.dart';
+import 'package:quickremind/repository/timetable_repository.dart';
+import 'package:quickremind/repository/settings_repository.dart';
+import 'package:quickremind/repository/memo_repository.dart';
+import 'package:quickremind/repository/subject_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  final memoRepository = MemoRepository();
+  final timetableRepository = TimetableRepository();
+  final settingsRepository = SettingsRepository();
+  final subjectRepository = SubjectRepository();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => SettingsController()),
-        ChangeNotifierProvider(create: (context) => TimetableController()),
-        ChangeNotifierProvider(create: (context) => WeatherController()),
-        ChangeNotifierProvider(create: (context) => AuthController()),
+        ChangeNotifierProvider(create: (_) => AuthController()),
+        ChangeNotifierProvider(
+          create: (_) => MemoController(repository: memoRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TimetableController(repository: timetableRepository),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => SettingsController(repository: settingsRepository),
+        ),
+        ChangeNotifierProvider(create: (_) => WeatherController()),
+        ChangeNotifierProvider(
+          create: (_) => SubjectController(repository: subjectRepository),
+        ),
       ],
       child: MyApp(),
     ),

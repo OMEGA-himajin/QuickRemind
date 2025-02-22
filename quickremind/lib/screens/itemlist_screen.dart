@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quickremind/controller/timetable_controller.dart';
+import 'package:quickremind/controller/subject_controller.dart';
 
 class ItemListScreen extends StatefulWidget {
   final String uid;
@@ -29,9 +29,9 @@ class _ItemListScreenState extends State<ItemListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TimetableController>(
-      builder: (context, timetableController, child) {
-        final subject = timetableController.subjects[widget.subjectId];
+    return Consumer<SubjectController>(
+      builder: (context, subjectController, child) {
+        final subject = subjectController.subjects[widget.subjectId];
         final items = subject?.items ?? [];
 
         return Scaffold(
@@ -57,7 +57,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                     ElevatedButton(
                       onPressed: () {
                         if (_itemNameController.text.isNotEmpty) {
-                          timetableController.addItem(
+                          subjectController.addItem(
                             widget.uid,
                             widget.subjectId,
                             _itemNameController.text,
@@ -95,7 +95,7 @@ class _ItemListScreenState extends State<ItemListScreen> {
                                   TextButton(
                                     child: const Text("削除"),
                                     onPressed: () {
-                                      timetableController.removeItem(
+                                      subjectController.removeItem(
                                         widget.uid,
                                         widget.subjectId,
                                         items[index],

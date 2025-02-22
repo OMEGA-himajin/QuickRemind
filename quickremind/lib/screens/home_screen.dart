@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:quickremind/widgets/datetile_widget.dart';
 import 'package:quickremind/widgets/memo_widget.dart';
-import 'package:quickremind/controller/memo_controller.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
 import '../model/subject_model.dart';
 import '../widgets/subjectcard.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
+import 'package:quickremind/controller/subject_controller.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final String uid;
@@ -19,20 +20,39 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   DateTime _selectedDate = DateTime.now();
   final AppinioSwiperController _swiperController = AppinioSwiperController();
-  TimetableController timetableController = TimetableController();
   List<SubjectModel> _subjects = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadSubjects(widget.uid);
+    _loadSubjects();
   }
 
-  Future<void> _loadSubjects(String uid) async {
-    List subjects = await timetableController.fetchSubjectsForToday(uid);
-    _subjects = subjects.cast<SubjectModel>();
+  Future<void> _loadSubjects() async {
+    final timetableController = context.read<TimetableController>();
+    final subjectController = context.read<SubjectController>();
+
+    await Future.wait([
+      timetableController.loadTimetable(widget.uid),
+      subjectController.loadSubjects(widget.uid),
+    ]);
+
+    final today = DateTime.now().weekday - 1;
+    final todaySchedule =
+        timetableController.timetable?.getScheduleForDay(today) ?? [];
+
+    // 重複を除外するために Set を使用
+    final uniqueSubjects = todaySchedule
+        .where((subjectId) => subjectId.isNotEmpty)
+        .map((subjectId) => subjectController.subjects[subjectId])
+        .where((subject) => subject != null)
+        .cast<SubjectModel>()
+        .toSet() // Set に変換して重複を除外
+        .toList();
+
     setState(() {
+      _subjects = uniqueSubjects;
       isLoading = false;
     });
   }
@@ -63,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           DateTileWidget(
             date: _selectedDate,
           ),
-          MemoWidget(controller: MemoController(uid: widget.uid)),
+          MemoWidget(uid: widget.uid),
           Expanded(
             child: _subjects.isEmpty
                 ? Container()

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
 import 'package:quickremind/screens/itemlist_screen.dart';
+import 'package:quickremind/controller/subject_controller.dart';
 
 class SubjectSelectionScreen extends StatefulWidget {
   final String uid;
@@ -39,8 +40,8 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TimetableController>(
-      builder: (context, timetableController, child) {
+    return Consumer2<TimetableController, SubjectController>(
+      builder: (context, timetableController, subjectController, child) {
         return Scaffold(
           appBar: AppBar(title: const Text('教科選択')),
           body: Column(
@@ -62,7 +63,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                     ElevatedButton(
                       onPressed: () {
                         if (_subjectNameController.text.isNotEmpty) {
-                          timetableController.addSubject(
+                          subjectController.addSubject(
                               widget.uid, _subjectNameController.text);
                           _subjectNameController.clear();
                         }
@@ -74,7 +75,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
               ),
               Expanded(
                 child: ListView(
-                  children: timetableController.subjects.values.map((subject) {
+                  children: subjectController.subjects.values.map((subject) {
                     return RadioListTile<String>(
                         title: Text(subject.name),
                         value: subject.id,
@@ -84,10 +85,8 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                             setState(() {
                               _selectedSubjectId = value;
                             });
-                            timetableController.updateTimetableCell(
-                                widget.day, widget.period, value);
-                            timetableController.saveTimetable(widget.uid);
-                            Navigator.pop(context);
+                            _handleSubjectChange(
+                                value, subjectController, timetableController);
                           }
                         },
                         secondary: Row(
@@ -110,7 +109,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                                           ),
                                           TextButton(
                                             onPressed: () {
-                                              timetableController.removeSubject(
+                                              subjectController.removeSubject(
                                                   widget.uid, subject.id);
                                               Navigator.pop(context);
                                             },
@@ -149,5 +148,16 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
         );
       },
     );
+  }
+
+  void _handleSubjectChange(String value, SubjectController subjectController,
+      TimetableController timetableController) async {
+    await timetableController.updateCell(
+      widget.uid,
+      widget.day,
+      widget.period,
+      value,
+    );
+    Navigator.pop(context);
   }
 }

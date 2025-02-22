@@ -4,6 +4,7 @@ import 'package:quickremind/app.dart';
 import 'package:quickremind/controller/auth_controller.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
 import 'package:quickremind/model/user_model.dart';
+import 'package:quickremind/repository/timetable_repository.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -104,7 +105,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void initDatabase(String uid) {
-    final timetableController = TimetableController();
+    final timetableRepository = TimetableRepository();
+    final timetableController =
+        TimetableController(repository: timetableRepository);
 
     // 時間割を追加
     timetableController.addEmptyTimetable(uid);

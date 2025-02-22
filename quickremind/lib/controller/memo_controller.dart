@@ -1,27 +1,25 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../model/memo_model.dart';
+import '../repository/memo_repository.dart';
 
-class MemoController {
-  final String uid;
-  MemoController({required this.uid});
+class MemoController extends ChangeNotifier {
+  final MemoRepository _repository;
+  MemoModel? _memo;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  MemoController({required MemoRepository repository})
+      : _repository = repository;
 
-  // Firestore からメモを取得
-  Future<MemoModel> fetchMemo() async {
-    DocumentSnapshot doc = await _firestore.collection('users').doc(uid).get();
-    if (doc.exists && doc.data() != null) {
-      return MemoModel.fromMap(doc.data() as Map<String, dynamic>);
-    } else {
-      return MemoModel(memo: ''); // デフォルト値
-    }
+  String get memoText => _memo?.text ?? '';
+
+  Future<void> loadMemo(String uid) async {
+    _memo = await _repository.fetchMemo(uid);
+    notifyListeners();
   }
 
-  // Firestore にメモを保存
-  Future<void> saveMemo(String memo) async {
-    await _firestore
-        .collection('users')
-        .doc(uid)
-        .set({'memo': memo}, SetOptions(merge: true));
+  Future<void> saveMemo(String uid, String text) async {
+    final memo = MemoModel(text: text);
+    await _repository.saveMemo(uid, memo);
+    _memo = memo;
+    notifyListeners();
   }
 }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:quickremind/model/memo_model.dart';
 import '../controller/memo_controller.dart';
+import 'package:provider/provider.dart';
 
 class MemoWidget extends StatefulWidget {
-  final MemoController controller;
+  final String uid;
 
-  const MemoWidget({super.key, required this.controller});
+  const MemoWidget({
+    super.key,
+    required this.uid,
+  });
 
   @override
   _MemoWidgetState createState() => _MemoWidgetState();
@@ -22,15 +25,16 @@ class _MemoWidgetState extends State<MemoWidget> {
   }
 
   Future<void> _loadMemo() async {
-    MemoModel memo = await widget.controller.fetchMemo();
+    final memoController = context.read<MemoController>();
+    await memoController.loadMemo(widget.uid);
     setState(() {
-      _textController.text = memo.memo;
+      _textController.text = memoController.memoText;
       _isLoading = false;
     });
   }
 
   void _saveMemo(String value) {
-    widget.controller.saveMemo(value);
+    context.read<MemoController>().saveMemo(widget.uid, value);
   }
 
   @override

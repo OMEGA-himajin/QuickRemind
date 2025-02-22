@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
+import 'package:quickremind/controller/settings_controller.dart';
 import 'package:quickremind/widgets/timetable_grid.dart';
 import 'package:quickremind/screens/subjectselection_screen.dart';
+import 'package:quickremind/controller/subject_controller.dart';
 
 class TimetableScreen extends StatefulWidget {
   final String uid;
@@ -24,9 +26,15 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   Future<void> _loadData() async {
     final timetableController = context.read<TimetableController>();
-    await timetableController.loadTimetable(widget.uid);
-    await timetableController.loadSubjects(widget.uid);
-    await timetableController.loadSettings(widget.uid);
+    final subjectController = context.read<SubjectController>();
+    final settingsController = context.read<SettingsController>();
+
+    await Future.wait([
+      timetableController.loadTimetable(widget.uid),
+      subjectController.loadSubjects(widget.uid),
+      settingsController.loadSettings(widget.uid),
+    ]);
+
     setState(() {
       _isLoading = false;
     });
@@ -34,8 +42,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TimetableController>(
-      builder: (context, timetableController, child) {
+    return Consumer3<TimetableController, SubjectController,
+        SettingsController>(
+      builder: (context, timetableController, subjectController,
+          settingsController, child) {
         if (_isLoading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -43,15 +53,24 @@ class _TimetableScreenState extends State<TimetableScreen> {
         }
 
         final timetable = timetableController.timetable;
-        final settings = timetableController.settings;
+        final settings = settingsController.settings;
 
         if (timetable == null || settings == null) {
           return const Scaffold(
-            body: Center(child: Text("時間割の読み込みに失敗しました。")),
+            body: Center(child: Text("データの読み込みに失敗しました。")),
           );
         }
 
         final days = ['月', '火', '水', '木', '金', '土', '日'];
+        final timetableData = [
+          timetable.mon,
+          timetable.tue,
+          timetable.wed,
+          timetable.thu,
+          timetable.fri,
+          timetable.sat,
+          timetable.sun,
+        ];
 
         return Scaffold(
           body: Padding(
@@ -62,14 +81,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 periods: settings.period,
                 showSat: settings.showSat,
                 showSun: settings.showSun,
-                timetable: List.generate(
-                    7,
-                    (dayIndex) => List.generate(
-                        settings.period,
-                        (periodIndex) => timetableController.getSubjectName(
-                            timetableController.getSubjectIdForCell(
-                                    dayIndex, periodIndex) ??
-                                ''))),
+                timetable: timetableData
+                    .map((day) => day
+                        .map((subjectId) =>
+                            subjectController.getSubjectName(subjectId))
+                        .toList())
+                    .toList(),
                 onCellTap: (day, period) {
                   Navigator.push(
                     context,
