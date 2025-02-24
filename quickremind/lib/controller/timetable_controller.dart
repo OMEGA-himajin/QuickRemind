@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../model/timetable_model.dart';
 import '../repository/timetable_repository.dart';
 
+// 時間割データを管理するコントローラー
 class TimetableController extends ChangeNotifier {
   final TimetableRepository _repository;
   TimetableModel? _timetable;
@@ -9,8 +10,10 @@ class TimetableController extends ChangeNotifier {
   TimetableController({required TimetableRepository repository})
       : _repository = repository;
 
+  // 現在の時間割データを取得
   TimetableModel? get timetable => _timetable;
 
+  // 時間割データを読み込む
   Future<void> loadTimetable(String uid) async {
     try {
       _timetable = await _repository.fetchTimetable(uid);
@@ -21,6 +24,12 @@ class TimetableController extends ChangeNotifier {
     }
   }
 
+  // 指定したセルの教科を更新
+  //
+  // [uid] ユーザーID
+  // [day] 曜日(0-6)
+  // [period] 時限
+  // [subjectId] 設定する教科ID
   Future<void> updateCell(
       String uid, int day, int period, String subjectId) async {
     try {
@@ -35,14 +44,16 @@ class TimetableController extends ChangeNotifier {
     }
   }
 
+  // 指定したセルの教科IDを取得
   String? getSubjectIdForCell(int day, int period) {
     return _timetable?.getSubjectIdForCell(day, period);
   }
 
+  // 空の時間割を作成
   Future<void> addEmptyTimetable(String uid) async {
     try {
-      await _repository.createEmptyTimetable(uid, 6); // デフォルトの時限数を6に設定
-      await loadTimetable(uid); // 作成後に読み込む
+      await _repository.createEmptyTimetable(uid, 6);
+      await loadTimetable(uid);
     } catch (e) {
       print('Error adding empty timetable: $e');
       rethrow;

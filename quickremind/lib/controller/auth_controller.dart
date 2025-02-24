@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quickremind/model/user_model.dart';
 import 'package:flutter/material.dart';
 
+// 認証を管理するコントローラー
 class AuthController extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

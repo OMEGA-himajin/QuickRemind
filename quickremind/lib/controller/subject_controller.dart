@@ -2,6 +2,7 @@ import '../model/subject_model.dart';
 import 'package:flutter/foundation.dart';
 import '../repository/subject_repository.dart';
 
+// 教科データを管理するコントローラー
 class SubjectController extends ChangeNotifier {
   final SubjectRepository _repository;
   Map<String, SubjectModel> _subjects = {};
@@ -9,8 +10,10 @@ class SubjectController extends ChangeNotifier {
   SubjectController({required SubjectRepository repository})
       : _repository = repository;
 
+  // 全ての教科データを取得
   Map<String, SubjectModel> get subjects => _subjects;
 
+  // 教科データを読み込む
   Future<void> loadSubjects(String uid) async {
     try {
       _subjects = await _repository.fetchSubjects(uid);
@@ -21,10 +24,12 @@ class SubjectController extends ChangeNotifier {
     }
   }
 
+  // 教科名を取得
   String getSubjectName(String subjectId) {
     return _subjects[subjectId]?.name ?? '';
   }
 
+  // 新しい教科を追加
   Future<void> addSubject(String uid, String name) async {
     try {
       final subject = await _repository.createSubject(uid, name);
@@ -36,6 +41,7 @@ class SubjectController extends ChangeNotifier {
     }
   }
 
+  // 教科を削除
   Future<void> removeSubject(String uid, String subjectId) async {
     try {
       await _repository.deleteSubject(uid, subjectId);
@@ -47,6 +53,7 @@ class SubjectController extends ChangeNotifier {
     }
   }
 
+  // 持ち物を追加
   Future<void> addItem(String uid, String subjectId, String itemName) async {
     try {
       await _repository.addItem(uid, subjectId, itemName);
@@ -58,6 +65,7 @@ class SubjectController extends ChangeNotifier {
     }
   }
 
+  // 持ち物を削除
   Future<void> removeItem(String uid, String subjectId, String itemName) async {
     try {
       await _repository.removeItem(uid, subjectId, itemName);
