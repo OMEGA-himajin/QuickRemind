@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// アプリケーション設定を管理するモデル
 class SettingsModel {
   final bool showSat;
   final bool showSun;
@@ -11,7 +12,8 @@ class SettingsModel {
     required this.period,
   });
 
-  // Firestore から取得したデータをオブジェクトに変換（範囲外の period を補正）
+  // Firestoreから取得したデータをオブジェクトに変換
+  // 範囲外のperiodは4〜10の範囲に補正される
   factory SettingsModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>? ?? {};
     int period = data['Period'] ?? 6;
@@ -27,7 +29,7 @@ class SettingsModel {
     );
   }
 
-  // Firestore に保存するための JSON 変換
+  // Firestoreに保存するためのJSON変換
   Map<String, dynamic> toJson() {
     return {
       'showSat': showSat,
