@@ -12,10 +12,10 @@ import '../controller/confirm_card_controller.dart';
 class HomeScreen extends StatefulWidget {
   final String uid;
 
-  const HomeScreen({Key? key, required this.uid}) : super(key: key);
+  const HomeScreen({super.key, required this.uid});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -49,6 +49,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _onSwipeEnd(
+      int previousIndex, int currentIndex, SwiperActivity activity) {
+    if (activity.direction == AxisDirection.left) {
+      setState(() {
+        _subjects.add(_subjects[previousIndex]);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -71,8 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     swipeOptions:
                         const SwipeOptions.symmetric(horizontal: true),
                     cardCount: _subjects.length,
+                    onSwipeEnd: _onSwipeEnd,
                     cardBuilder: (context, index) {
-                      return ConfirmationCard(subject: _subjects[index]);
+                      return ConfirmCard(subject: _subjects[index]);
                     },
                   ),
           ),

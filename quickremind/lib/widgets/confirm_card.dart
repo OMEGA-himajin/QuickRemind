@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../model/subject_model.dart';
 
-class ConfirmationCard extends StatelessWidget {
+// 教科の確認カードを表示するウィジェット
+class ConfirmCard extends StatelessWidget {
   final SubjectModel subject;
 
-  const ConfirmationCard({Key? key, required this.subject}) : super(key: key);
+  const ConfirmCard({super.key, required this.subject});
 
   @override
   Widget build(BuildContext context) {
