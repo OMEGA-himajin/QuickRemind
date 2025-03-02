@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
 import 'package:quickremind/screens/itemlist_screen.dart';
 import 'package:quickremind/controller/subject_controller.dart';
+import '../widgets/item_add_form.dart';
 
 class SubjectSelectionScreen extends StatefulWidget {
   final String uid;
@@ -46,32 +47,16 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
           appBar: AppBar(title: const Text('教科選択')),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _subjectNameController,
-                        decoration: const InputDecoration(
-                          hintText: '新しい教科名',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_subjectNameController.text.isNotEmpty) {
-                          subjectController.addSubject(
-                              widget.uid, _subjectNameController.text);
-                          _subjectNameController.clear();
-                        }
-                      },
-                      child: const Text('追加'),
-                    ),
-                  ],
-                ),
+              ItemAddForm(
+                controller: _subjectNameController,
+                hintText: '新しい教科名',
+                onSubmit: () {
+                  if (_subjectNameController.text.isNotEmpty) {
+                    subjectController.addSubject(
+                        widget.uid, _subjectNameController.text);
+                    _subjectNameController.clear();
+                  }
+                },
               ),
               Expanded(
                 child: ListView(

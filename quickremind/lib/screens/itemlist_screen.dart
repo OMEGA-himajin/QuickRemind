@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/controller/subject_controller.dart';
+import '../widgets/item_add_form.dart';
 
 class ItemListScreen extends StatefulWidget {
   final String uid;
@@ -40,35 +41,19 @@ class _ItemListScreenState extends State<ItemListScreen> {
           ),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _itemNameController,
-                        decoration: const InputDecoration(
-                          hintText: '新しいアイテム名',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_itemNameController.text.isNotEmpty) {
-                          subjectController.addItem(
-                            widget.uid,
-                            widget.subjectId,
-                            _itemNameController.text,
-                          );
-                          _itemNameController.clear();
-                        }
-                      },
-                      child: const Text('追加'),
-                    ),
-                  ],
-                ),
+              ItemAddForm(
+                controller: _itemNameController,
+                hintText: '新しいアイテム名',
+                onSubmit: () {
+                  if (_itemNameController.text.isNotEmpty) {
+                    subjectController.addItem(
+                      widget.uid,
+                      widget.subjectId,
+                      _itemNameController.text,
+                    );
+                    _itemNameController.clear();
+                  }
+                },
               ),
               Expanded(
                 child: ListView.builder(
