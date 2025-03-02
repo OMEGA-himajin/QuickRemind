@@ -44,9 +44,9 @@ class ConfirmationCard extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Row(children: [
                 Icon(Icons.arrow_back),
                 SizedBox(width: 4),
