@@ -4,6 +4,7 @@ import 'package:quickremind/controller/timetable_controller.dart';
 import 'package:quickremind/screens/itemlist_screen.dart';
 import 'package:quickremind/controller/subject_controller.dart';
 import '../widgets/item_add_form.dart';
+import '../utils/dialog_utils.dart';
 
 class SubjectSelectionScreen extends StatefulWidget {
   final String uid;
@@ -78,34 +79,17 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  showDialog(
+                                onPressed: () async {
+                                  final shouldDelete =
+                                      await DialogUtils.showConfirmDialog(
                                     context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text("教科を削除"),
-                                        content:
-                                            Text("「${subject.name}」を削除しますか？"),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: const Text("キャンセル"),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              subjectController.removeSubject(
-                                                  widget.uid, subject.id);
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text("削除",
-                                                style: TextStyle(
-                                                    color: Colors.red)),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                    title: "教科を削除",
+                                    message: "「${subject.name}」を削除しますか？",
                                   );
+                                  if (shouldDelete) {
+                                    subjectController.removeSubject(
+                                        widget.uid, subject.id);
+                                  }
                                 },
                                 icon: const Icon(Icons.delete)),
                             IconButton(

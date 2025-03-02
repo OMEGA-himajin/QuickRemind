@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/controller/subject_controller.dart';
 import '../widgets/item_add_form.dart';
+import '../utils/dialog_utils.dart';
 
 class ItemListScreen extends StatefulWidget {
   final String uid;
@@ -9,14 +10,14 @@ class ItemListScreen extends StatefulWidget {
   final String subjectName;
 
   const ItemListScreen({
-    Key? key,
+    super.key,
     required this.uid,
     required this.subjectId,
     required this.subjectName,
-  }) : super(key: key);
+  });
 
   @override
-  _ItemListScreenState createState() => _ItemListScreenState();
+  State<ItemListScreen> createState() => _ItemListScreenState();
 }
 
 class _ItemListScreenState extends State<ItemListScreen> {
@@ -63,35 +64,20 @@ class _ItemListScreenState extends State<ItemListScreen> {
                       title: Text(items[index]),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          showDialog(
+                        onPressed: () async {
+                          final shouldDelete =
+                              await DialogUtils.showConfirmDialog(
                             context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("アイテムの削除"),
-                                content: Text("${items[index]}を削除してもよろしいですか？"),
-                                actions: [
-                                  TextButton(
-                                    child: const Text("キャンセル"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text("削除"),
-                                    onPressed: () {
-                                      subjectController.removeItem(
-                                        widget.uid,
-                                        widget.subjectId,
-                                        items[index],
-                                      );
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
+                            title: "アイテムの削除",
+                            message: "${items[index]}を削除してもよろしいですか？",
                           );
+                          if (shouldDelete) {
+                            subjectController.removeItem(
+                              widget.uid,
+                              widget.subjectId,
+                              items[index],
+                            );
+                          }
                         },
                       ),
                     );
