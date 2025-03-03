@@ -13,15 +13,15 @@ class SubjectSelectionScreen extends StatefulWidget {
   final String? selectedSubjectId;
 
   const SubjectSelectionScreen({
-    Key? key,
+    super.key,
     required this.uid,
     required this.day,
     required this.period,
     this.selectedSubjectId,
-  }) : super(key: key);
+  });
 
   @override
-  _SubjectSelectionScreenState createState() => _SubjectSelectionScreenState();
+  State<SubjectSelectionScreen> createState() => _SubjectSelectionScreenState();
 }
 
 class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
@@ -38,6 +38,17 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
   void dispose() {
     _subjectNameController.dispose();
     super.dispose();
+  }
+
+  void _handleSubjectChange(String value, SubjectController subjectController,
+      TimetableController timetableController) async {
+    await timetableController.updateCell(
+      widget.uid,
+      widget.day,
+      widget.period,
+      value,
+    );
+    Navigator.pop(context);
   }
 
   @override
@@ -86,7 +97,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                                     title: "教科を削除",
                                     message: "「${subject.name}」を削除しますか？",
                                   );
-                                  if (shouldDelete) {
+                                  if (mounted && shouldDelete) {
                                     subjectController.removeSubject(
                                         widget.uid, subject.id);
                                   }
@@ -117,16 +128,5 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
         );
       },
     );
-  }
-
-  void _handleSubjectChange(String value, SubjectController subjectController,
-      TimetableController timetableController) async {
-    await timetableController.updateCell(
-      widget.uid,
-      widget.day,
-      widget.period,
-      value,
-    );
-    Navigator.pop(context);
   }
 }

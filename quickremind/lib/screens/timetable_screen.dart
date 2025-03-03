@@ -9,10 +9,10 @@ import 'package:quickremind/controller/subject_controller.dart';
 class TimetableScreen extends StatefulWidget {
   final String uid;
 
-  const TimetableScreen({Key? key, required this.uid}) : super(key: key);
+  const TimetableScreen({super.key, required this.uid});
 
   @override
-  _TimetableScreenState createState() => _TimetableScreenState();
+  State<TimetableScreen> createState() => _TimetableScreenState();
 }
 
 class _TimetableScreenState extends State<TimetableScreen> {

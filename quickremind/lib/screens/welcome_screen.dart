@@ -7,8 +7,10 @@ import 'package:quickremind/model/user_model.dart';
 import 'package:quickremind/repository/timetable_repository.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
+
   @override
-  _WelcomeScreenState createState() => _WelcomeScreenState();
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
@@ -44,10 +46,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       });
     } else {
       // 初回起動以外の場合は自動的にホーム画面に遷移
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => App()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => App()),
+        );
+      }
     }
   }
 
@@ -126,17 +130,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 children: [
                   TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(labelText: "メール"),
+                    decoration: const InputDecoration(labelText: "メール"),
                   ),
                   TextField(
                     controller: _passwordController,
-                    decoration: InputDecoration(labelText: "パスワード"),
+                    decoration: const InputDecoration(labelText: "パスワード"),
                     obscureText: true,
                   ),
                   if (_isSignUp)
                     TextField(
                       controller: _confirmPasswordController,
-                      decoration: InputDecoration(labelText: "パスワードの確認"),
+                      decoration: const InputDecoration(labelText: "パスワードの確認"),
                       obscureText: true,
                     ),
                   const SizedBox(height: 16),
