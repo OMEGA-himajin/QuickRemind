@@ -7,12 +7,12 @@ class TimetableCell extends StatelessWidget {
   final bool isHeader;
 
   const TimetableCell({
-    Key? key,
+    super.key,
     required this.text,
     required this.onTap,
     required this.height,
     this.isHeader = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

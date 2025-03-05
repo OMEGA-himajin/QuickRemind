@@ -6,8 +6,10 @@ import 'screens/timetable_screen.dart';
 import 'screens/license_screen.dart';
 
 class App extends StatefulWidget {
+  const App({super.key});
+
   @override
-  _AppState createState() => _AppState();
+  State<App> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
@@ -27,7 +29,7 @@ class _AppState extends State<App> {
         HomeScreen(
           uid: uid!,
         ),
-        Center(child: CircularProgressIndicator())
+        const Center(child: CircularProgressIndicator())
       ];
     }
     return [
@@ -53,7 +55,7 @@ class _AppState extends State<App> {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer(); // メニューを開く
               },

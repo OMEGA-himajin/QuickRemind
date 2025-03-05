@@ -11,7 +11,7 @@ class MemoWidget extends StatefulWidget {
   });
 
   @override
-  _MemoWidgetState createState() => _MemoWidgetState();
+  State<MemoWidget> createState() => _MemoWidgetState();
 }
 
 class _MemoWidgetState extends State<MemoWidget> {

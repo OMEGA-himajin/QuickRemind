@@ -49,7 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => App()),
+          MaterialPageRoute(builder: (context) => const App()),
         );
       }
     }
@@ -81,7 +81,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => App(),
+          builder: (context) => const App(),
         ),
       );
     } else {
@@ -98,7 +98,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => App(),
+          builder: (context) => const App(),
         ),
       );
     } else {

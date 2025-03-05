@@ -9,14 +9,14 @@ class TimetableGrid extends StatelessWidget {
   final Function(int, int) onCellTap;
 
   const TimetableGrid({
-    Key? key,
+    super.key,
     required this.days,
     required this.periods,
     required this.showSat,
     required this.showSun,
     required this.timetable,
     required this.onCellTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
