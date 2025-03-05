@@ -1,43 +1,44 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:quickremind/model/settings_model.dart';
+import '../model/settings_model.dart';
+import '../repository/settings_repository.dart';
 
+// アプリケーション設定を管理するコントローラー
 class SettingsController extends ChangeNotifier {
+  final SettingsRepository _repository;
   SettingsModel? _settings;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  SettingsController({required SettingsRepository repository})
+      : _repository = repository;
+
+  // 現在の設定を取得
   SettingsModel? get settings => _settings;
 
+  // 設定を読み込む
   Future<void> loadSettings(String uid) async {
-    final doc = await _firestore.collection('users').doc(uid).get();
-    if (doc.exists) {
-      _settings = SettingsModel.fromFirestore(doc);
-    } else {
-      _settings = SettingsModel(showSat: false, showSun: false, period: 6);
-      await saveSettings(uid);
-    }
-    notifyListeners(); // 🔥 データ更新を通知
+    _settings = await _repository.fetchSettings(uid);
+    notifyListeners();
   }
 
+  // 設定を保存
   Future<void> saveSettings(String uid) async {
-    await _firestore
-        .collection('users')
-        .doc(uid)
-        .set(_settings!.toJson(), SetOptions(merge: true));
+    await _repository.saveSettings(uid, _settings!);
   }
 
+  // 土曜日を表示するかどうかを更新
   void updateShowSat(bool value) {
     _settings = SettingsModel(
         showSat: value, showSun: _settings!.showSun, period: _settings!.period);
     notifyListeners();
   }
 
+  // 日曜日を表示するかどうかを更新
   void updateShowSun(bool value) {
     _settings = SettingsModel(
         showSat: _settings!.showSat, showSun: value, period: _settings!.period);
     notifyListeners();
   }
 
+  // 時限数を更新
   void updatePeriod(int value) {
     if (value < 4 || value > 10) return; // 4〜10 以外の値は無視
     _settings = SettingsModel(

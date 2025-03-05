@@ -1,15 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// メモデータを管理するモデル
 class MemoModel {
-  String memo;
+  final String text;
 
-  MemoModel({required this.memo});
+  MemoModel({
+    required this.text,
+  });
 
-  // Firestore から取得したデータを MemoModel に変換
-  factory MemoModel.fromMap(Map<String, dynamic> data) {
-    return MemoModel(memo: data['memo'] ?? '');
+  // Firestoreから取得したデータをオブジェクトに変換
+  factory MemoModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>?;
+    return MemoModel(
+      text: data?['memo'] ?? '',
+    );
   }
 
-  // Firestore に保存するための Map 形式
+  // Firestoreに保存するためのMap変換
   Map<String, dynamic> toMap() {
-    return {'memo': memo};
+    return {
+      'memo': text,
+    };
   }
 }

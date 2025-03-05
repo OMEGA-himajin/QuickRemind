@@ -1,3 +1,4 @@
+// ユーザー情報を管理するモデル
 class UserModel {
   final String uid;
   final String? email;

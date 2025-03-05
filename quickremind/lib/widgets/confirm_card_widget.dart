@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../model/subject_model.dart';
 
-class ConfirmationCard extends StatelessWidget {
+// 教科の確認カードを表示するウィジェット
+class ConfirmCard extends StatelessWidget {
   final SubjectModel subject;
 
-  const ConfirmationCard({Key? key, required this.subject}) : super(key: key);
+  const ConfirmCard({super.key, required this.subject});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +28,14 @@ class ConfirmationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(subject.name,
-              style:
-                  const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              style: const TextStyle(
+                  fontSize: 30, fontWeight: FontWeight.bold)), // 教科名を表示
           const SizedBox(height: 16),
           Center(
             child: Column(
               children: subject.items
                   .map((item) => Text(
-                        '・$item',
+                        '・$item', // アイテム名をリスト表示
                         style: const TextStyle(
                           fontSize: 20, // フォントサイズを大きくする
                           fontWeight: FontWeight.bold, // 必要に応じて太字にする
@@ -44,18 +45,18 @@ class ConfirmationCard extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Row(children: [
-                Icon(Icons.arrow_back),
+                Icon(Icons.arrow_back), // 戻るアイコン
                 SizedBox(width: 4),
                 Text('保留')
               ]),
               Row(children: [
                 Text('確認'),
                 SizedBox(width: 4),
-                Icon(Icons.arrow_forward)
+                Icon(Icons.arrow_forward) // 次へ進むアイコン
               ]),
             ],
           ),
