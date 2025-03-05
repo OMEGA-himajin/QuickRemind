@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
 import 'package:quickremind/controller/settings_controller.dart';
-import 'package:quickremind/widgets/timetable_grid.dart';
+import 'package:quickremind/widgets/timetable_grid_widget.dart';
 import 'package:quickremind/screens/subjectselection_screen.dart';
 import 'package:quickremind/controller/subject_controller.dart';
 

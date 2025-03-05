@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:quickremind/controller/timetable_controller.dart';
 import 'package:quickremind/screens/itemlist_screen.dart';
 import 'package:quickremind/controller/subject_controller.dart';
-import '../widgets/item_add_form.dart';
+import '../widgets/add_form_widget.dart';
 import '../utils/dialog_utils.dart';
 
 class SubjectSelectionScreen extends StatefulWidget {
