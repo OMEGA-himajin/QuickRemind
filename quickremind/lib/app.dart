@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'controller/auth_controller.dart';
 import 'screens/home_screen.dart';
 import 'screens/settings_screen.dart';
-import 'controller/auth_controller.dart';
 import 'screens/timetable_screen.dart';
 import 'screens/license_screen.dart';
 

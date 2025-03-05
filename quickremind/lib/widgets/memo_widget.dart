@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../controller/memo_controller.dart';
 import 'package:provider/provider.dart';
+import '../controller/memo_controller.dart';
 
 class MemoWidget extends StatefulWidget {
   final String uid;

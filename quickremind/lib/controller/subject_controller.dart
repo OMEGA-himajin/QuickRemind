@@ -1,5 +1,5 @@
-import '../model/subject_model.dart';
 import 'package:flutter/foundation.dart';
+import '../model/subject_model.dart';
 import '../repository/subject_repository.dart';
 
 // 教科データを管理するコントローラー

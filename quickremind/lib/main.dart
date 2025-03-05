@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:quickremind/controller/settings_controller.dart';
-import 'package:quickremind/screens/welcome_screen.dart';
-import 'package:quickremind/controller/timetable_controller.dart';
-import 'package:quickremind/controller/weather_controller.dart';
-import 'package:quickremind/controller/auth_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:quickremind/firebase_options.dart';
-import 'package:quickremind/controller/subject_controller.dart';
-import 'package:quickremind/controller/memo_controller.dart';
-import 'package:quickremind/repository/timetable_repository.dart';
-import 'package:quickremind/repository/settings_repository.dart';
-import 'package:quickremind/repository/memo_repository.dart';
-import 'package:quickremind/repository/subject_repository.dart';
+import '../firebase_options.dart';
+import '../controller/settings_controller.dart';
+import '../controller/timetable_controller.dart';
+import '../controller/weather_controller.dart';
+import '../controller/auth_controller.dart';
+import '../controller/subject_controller.dart';
+import '../controller/memo_controller.dart';
+import '../repository/timetable_repository.dart';
+import '../repository/settings_repository.dart';
+import '../repository/memo_repository.dart';
+import '../repository/subject_repository.dart';
+import '../screens/welcome_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

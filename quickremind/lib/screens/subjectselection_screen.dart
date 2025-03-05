@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quickremind/controller/timetable_controller.dart';
-import 'package:quickremind/screens/itemlist_screen.dart';
-import 'package:quickremind/controller/subject_controller.dart';
+import '../controller/timetable_controller.dart';
+import '../controller/subject_controller.dart';
+import '../screens/itemlist_screen.dart';
 import '../widgets/add_form_widget.dart';
 import '../utils/dialog_utils.dart';
 

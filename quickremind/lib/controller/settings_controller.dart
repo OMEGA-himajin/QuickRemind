@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quickremind/model/settings_model.dart';
-import 'package:quickremind/repository/settings_repository.dart';
+import '../model/settings_model.dart';
+import '../repository/settings_repository.dart';
 
 // アプリケーション設定を管理するコントローラー
 class SettingsController extends ChangeNotifier {

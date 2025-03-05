@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quickremind/app.dart';
-import 'package:quickremind/controller/auth_controller.dart';
-import 'package:quickremind/controller/timetable_controller.dart';
-import 'package:quickremind/model/user_model.dart';
-import 'package:quickremind/repository/timetable_repository.dart';
+import '../app.dart';
+import '../controller/auth_controller.dart';
+import '../controller/timetable_controller.dart';
+import '../model/user_model.dart';
+import '../repository/timetable_repository.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
