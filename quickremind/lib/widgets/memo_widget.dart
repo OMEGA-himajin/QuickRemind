@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controller/memo_controller.dart';
 
+// メモを表示・編集するウィジェット
 class MemoWidget extends StatefulWidget {
   final String uid;
 
@@ -15,32 +16,35 @@ class MemoWidget extends StatefulWidget {
 }
 
 class _MemoWidgetState extends State<MemoWidget> {
-  final TextEditingController _textController = TextEditingController();
-  bool _isLoading = true;
+  final TextEditingController _textController =
+      TextEditingController(); // テキストコントローラー
+  bool _isLoading = true; // ローディング状態を管理
 
   @override
   void initState() {
     super.initState();
-    _loadMemo();
+    _loadMemo(); // メモをロード
   }
 
+  // メモを非同期でロードする
   Future<void> _loadMemo() async {
     final memoController = context.read<MemoController>();
-    await memoController.loadMemo(widget.uid);
+    await memoController.loadMemo(widget.uid); // メモを取得
     setState(() {
-      _textController.text = memoController.memoText;
-      _isLoading = false;
+      _textController.text = memoController.memoText; // テキストフィールドにメモを設定
+      _isLoading = false; // ロード完了
     });
   }
 
+  // メモを保存する
   void _saveMemo(String value) {
-    context.read<MemoController>().saveMemo(widget.uid, value);
+    context.read<MemoController>().saveMemo(widget.uid, value); // メモを保存
   }
 
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Center(child: CircularProgressIndicator()) // ローディング中
+        ? const Center(child: CircularProgressIndicator()) // ローディング中表示
         : Container(
             margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -54,7 +58,7 @@ class _MemoWidgetState extends State<MemoWidget> {
                 const SizedBox(width: 8.0), // アイコンとテキストフィールドの間隔
                 Expanded(
                   child: TextField(
-                    controller: _textController,
+                    controller: _textController, // コントローラーを設定
                     decoration: const InputDecoration(
                       border: InputBorder.none, // 枠線なし
                       hintText: 'メモを入力...',

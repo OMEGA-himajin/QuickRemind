@@ -28,14 +28,14 @@ class ConfirmCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(subject.name,
-              style:
-                  const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              style: const TextStyle(
+                  fontSize: 30, fontWeight: FontWeight.bold)), // 教科名を表示
           const SizedBox(height: 16),
           Center(
             child: Column(
               children: subject.items
                   .map((item) => Text(
-                        '・$item',
+                        '・$item', // アイテム名をリスト表示
                         style: const TextStyle(
                           fontSize: 20, // フォントサイズを大きくする
                           fontWeight: FontWeight.bold, // 必要に応じて太字にする
@@ -49,14 +49,14 @@ class ConfirmCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(children: [
-                Icon(Icons.arrow_back),
+                Icon(Icons.arrow_back), // 戻るアイコン
                 SizedBox(width: 4),
                 Text('保留')
               ]),
               Row(children: [
                 Text('確認'),
                 SizedBox(width: 4),
-                Icon(Icons.arrow_forward)
+                Icon(Icons.arrow_forward) // 次へ進むアイコン
               ]),
             ],
           ),

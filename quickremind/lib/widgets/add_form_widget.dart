@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+// リスト追加用のフォームウィジェット
 class ItemAddForm extends StatelessWidget {
-  final TextEditingController controller;
-  final VoidCallback onSubmit;
-  final String hintText;
+  final TextEditingController controller; // テキストフィールドのコントローラー
+  final VoidCallback onSubmit; // 追加ボタンが押されたときのコールバック
+  final String hintText; // テキストフィールドのヒントテキスト
 
   const ItemAddForm({
     super.key,
@@ -20,17 +21,17 @@ class ItemAddForm extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
-              controller: controller,
+              controller: controller, // コントローラーを設定
               decoration: InputDecoration(
-                hintText: hintText,
-                border: const OutlineInputBorder(),
+                hintText: hintText, // ヒントテキストを設定
+                border: const OutlineInputBorder(), // 枠線を設定
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 8), // テキストフィールドとボタンの間隔
           ElevatedButton(
-            onPressed: onSubmit,
-            child: const Text('追加'),
+            onPressed: onSubmit, // 追加ボタンのコールバック
+            child: const Text('追加'), // ボタンのテキスト
           ),
         ],
       ),
