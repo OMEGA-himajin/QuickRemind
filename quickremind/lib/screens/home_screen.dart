@@ -9,8 +9,9 @@ import '../widgets/confirm_card_widget.dart';
 import '../widgets/datetile_widget.dart';
 import '../widgets/memo_widget.dart';
 
+// メイン画面、今日の教科を表示。
 class HomeScreen extends StatefulWidget {
-  final String uid;
+  final String uid; // ユーザーID
 
   const HomeScreen({super.key, required this.uid});
 
@@ -19,9 +20,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late final ConfirmCardController _confirmCardController;
-  List<SubjectModel> _subjects = [];
-  bool _isLoading = true;
+  late final ConfirmCardController _confirmCardController; // 確認カードコントローラー
+  List<SubjectModel> _subjects = []; // 教科リスト
+  bool _isLoading = true; // ローディング状態を管理
 
   @override
   void initState() {
@@ -32,14 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
       timetableController: timetableController,
       subjectController: subjectController,
     );
-    _loadSubjects();
+    _loadSubjects(); // 教科をロード
   }
 
+  // 教科を非同期でロードする
   Future<void> _loadSubjects() async {
     try {
-      _subjects = await _confirmCardController.getTodaySubjects(widget.uid);
+      _subjects =
+          await _confirmCardController.getTodaySubjects(widget.uid); // 今日の教科を取得
       setState(() {
-        _isLoading = false;
+        _isLoading = false; // ロード完了後、ローディング終了
       });
     } catch (e) {
       print('Error loading subjects: $e');
@@ -49,11 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // スワイプ終了時の処理
   void _onSwipeEnd(
       int previousIndex, int currentIndex, SwiperActivity activity) {
     if (activity.direction == AxisDirection.left) {
       setState(() {
-        _subjects.add(_subjects[previousIndex]);
+        _subjects.add(_subjects[previousIndex]); // 左にスワイプした場合、前の教科を追加
       });
     }
   }
@@ -62,18 +66,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: CircularProgressIndicator()), // ロード中表示
       );
     }
 
     return Scaffold(
       body: Column(
         children: [
-          DateTileWidget(date: DateTime.now()),
-          MemoWidget(uid: widget.uid),
+          DateTileWidget(date: DateTime.now()), // 今日の日付を表示
+          MemoWidget(uid: widget.uid), // メモウィジェットを表示
           Expanded(
             child: _subjects.isEmpty
-                ? Container()
+                ? Container() // 教科がない場合は空のコンテナ
                 : AppinioSwiper(
                     invertAngleOnBottomDrag: true,
                     backgroundCardCount: 3,
@@ -82,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     cardCount: _subjects.length,
                     onSwipeEnd: _onSwipeEnd,
                     cardBuilder: (context, index) {
-                      return ConfirmCard(subject: _subjects[index]);
+                      return ConfirmCard(subject: _subjects[index]); // 確認カードを表示
                     },
                   ),
           ),
